@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>传记撰写 · 让生命被书写</title>
+<style>
+/* ════════════════════════════════════════════════════════════
+   水墨统一色调 · Apple Ink 高级感
+   ════════════════════════════════════════════════════════════ */
+:root{
+  --ink-900:#0d0e10;   /* 最深墨 */
+  --ink-800:#15171a;
+  --ink-700:#1d2025;
+  --ink-600:#2a2e35;
+  --ink-500:#3a3f47;
+  --paper:#ece4d2;     /* 宣纸色 */
+  --paper-soft:#d9cfb8;
+  --gold:#c9a86a;      /* 鎏金 */
+  --gold-soft:#e3c98c;
+  --jade:#7fa088;      /* 青玉 */
+  --vermilion:#b04a3a; /* 朱砂印章 */
+  --muted:#8b8472;
+  --line:rgba(201,168,106,.25);
+  --serif:"Songti SC","STSong","SimSun","Noto Serif SC",serif;
+  --sans:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--serif);
+  background:var(--ink-900);
+  color:var(--paper);
+  overflow-x:hidden;
+  cursor:none;
+}
+a{color:inherit;text-decoration:none}
+
+/* ── 自定义光标（墨滴） ── */
+.cursor{position:fixed;width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle,var(--gold-soft),var(--gold) 60%,transparent);
+  pointer-events:none;z-index:9999;mix-blend-mode:screen;
+  transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s}
+.cursor.ring{width:46px;height:46px;background:transparent;
+  border:1px solid var(--line);mix-blend-mode:normal}
+
+/* ════════════════════════════════════════════════════════════
+   背景层：毛笔字 + 鼠标渐变放大
+   ════════════════════════════════════════════════════════════ */
+.bg-layer{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.bg-calligraphy{
+  position:absolute;inset:-15%;
+  background-image:
+    radial-gradient(ellipse at 20% 30%,rgba(127,160,136,.06),transparent 45%),
+    radial-gradient(ellipse at 80% 70%,rgba(201,168,106,.05),transparent 45%);
+}
+/* 毛笔字大字（80%透明度，铺满） */
+.bg-chars{position:absolute;inset:0;display:flex;flex-wrap:wrap;
+  align-content:flex-start;opacity:.08;
+  font-family:var(--serif);font-weight:900;color:var(--paper);
+  font-size:14vw;line-height:1.02;letter-spacing:.05em;
+  user-select:none;filter:blur(.5px)}
+.bg-chars span{padding:.06em .12em;display:inline-block;
+  will-change:transform;transition:transform .6s cubic-bezier(.2,.8,.2,1),
+  opacity .6s ease,filter .6s ease}
+/* 鼠标经过处的字符渐变放大 */
+.bg-chars span.near{transform:scale(2.4);opacity:.5;filter:blur(0);
+  color:var(--gold-soft);transition:transform .8s cubic-bezier(.2,.8,.2,1),
+  opacity .8s ease,filter .8s ease}
+/* 鼠标径向光晕 */
+.bg-glow{position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,106,.10),transparent 60%);
+  transform:translate(-50%,-50%);pointer-events:none;
+  transition:opacity .4s ease;mix-blend-mode:screen}
+
+/* ════════════════════════════════════════════════════════════
+   导航
+   ════════════════════════════════════════════════════════════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:18px 48px;display:flex;justify-content:space-between;align-items:center;
+  background:linear-gradient(180deg,rgba(13,14,16,.85),transparent);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.logo{font-family:var(--serif);font-size:20px;font-weight:700;
+  letter-spacing:.15em;color:var(--gold-soft)}
+.logo span{color:var(--vermilion);font-size:13px;vertical-align:super;margin-left:4px}
+.nav-links{display:flex;gap:34px;font-family:var(--sans);font-size:13px;
+  color:var(--muted);letter-spacing:.08em}
+.nav-links a{transition:color .3s;position:relative}
+.nav-links a:hover{color:var(--gold-soft)}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;
+  height:1px;background:var(--gold);transition:width .3s}
+.nav-links a:hover::after{width:100%}
+
+/* ════════════════════════════════════════════════════════════
+   英雄区
+   ════════════════════════════════════════════════════════════ */
+.hero{position:relative;z-index:2;min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:0 24px}
+.hero .seal{width:64px;height:64px;border:2px solid var(--vermilion);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  color:var(--vermilion);font-family:var(--serif);font-size:26px;font-weight:700;
+  margin-bottom:36px;letter-spacing:0;
+  box-shadow:0 0 0 4px rgba(176,74,58,.12);
+  animation:sealPulse 4s ease-in-out infinite}
+@keyframes sealPulse{50%{box-shadow:0 0 0 12px rgba(176,74,58,.04)}}
+.hero h1{font-size:clamp(48px,8vw,108px);font-weight:900;line-height:1.05;
+  letter-spacing:.04em;
+  background:linear-gradient(180deg,var(--paper) 30%,var(--gold-soft) 90%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:20px}
+.hero .sub{font-family:var(--sans);font-size:clamp(15px,2vw,20px);
+  color:var(--muted);letter-spacing:.25em;margin-bottom:14px}
+.hero .en{font-family:var(--sans);font-size:13px;color:var(--ink-500);
+  letter-spacing:.3em;text-transform:uppercase}
+.hero .scroll-hint{position:absolute;bottom:40px;left:50%;
+  transform:translateX(-50%);font-family:var(--sans);font-size:11px;
+  color:var(--muted);letter-spacing:.3em;writing-mode:vertical-rl;
+  animation:hintFloat 2.5s ease-in-out infinite}
+@keyframes hintFloat{50%{transform:translate(-50%,10px);opacity:.5}}
+
+/* ════════════════════════════════════════════════════════════
+   伟人轮播 · 书本区
+   ════════════════════════════════════════════════════════════ */
+.carousel-section{position:relative;z-index:2;padding:80px 48px 100px}
+.section-head{text-align:center;margin-bottom:56px}
+.section-head .kicker{font-family:var(--sans);font-size:12px;
+  color:var(--gold);letter-spacing:.4em;text-transform:uppercase;margin-bottom:14px}
+.section-head h2{font-size:clamp(30px,4.5vw,52px);font-weight:700;
+  color:var(--paper);letter-spacing:.06em}
+.section-head p{font-family:var(--sans);font-size:14px;color:var(--muted);
+  margin-top:12px;letter-spacing:.1em}
+
+.carousel{max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:380px 1fr;gap:60px;align-items:start}
+
+/* 轮播外层 + 左右箭头 */
+.carousel-wrap{position:relative;max-width:1280px;margin:0 auto;
+  display:flex;align-items:center;gap:12px}
+.fig-arrow{flex:none;width:52px;height:52px;border-radius:50%;
+  border:1px solid var(--line);background:rgba(21,23,26,.6);
+  color:var(--muted);display:flex;align-items:center;justify-content:center;
+  cursor:none;transition:all .35s cubic-bezier(.2,.8,.2,1);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:5}
+.fig-arrow svg{width:22px;height:22px}
+.fig-arrow:hover{border-color:var(--gold);color:var(--gold-soft);
+  background:rgba(201,168,106,.12);transform:scale(1.12);
+  box-shadow:0 8px 24px rgba(201,168,106,.2)}
+.fig-arrow:active{transform:scale(.95)}
+.carousel-wrap .carousel{flex:1;margin:0;max-width:none}
+
+/* 自动轮播进度条 + 播放开关 */
+.autoplay-bar{margin-top:22px;display:flex;align-items:center;gap:14px}
+.play-btn{flex:none;width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--line);background:transparent;color:var(--gold-soft);
+  display:flex;align-items:center;justify-content:center;cursor:none;
+  transition:all .3s;padding:0}
+.play-btn svg{width:14px;height:14px}
+.play-btn:hover{border-color:var(--gold);background:rgba(201,168,106,.1)}
+.progress-track{flex:1;height:2px;border-radius:2px;background:var(--ink-600);
+  overflow:hidden;position:relative}
+.progress-fill{position:absolute;left:0;top:0;bottom:0;width:0;
+  background:linear-gradient(90deg,var(--gold),var(--gold-soft));
+  border-radius:2px;transition:none}
+.autoplay-bar.paused .progress-fill{transition:width .3s ease}
+
+/* 左：伟人肖像 */
+.portrait-col{position:sticky;top:90px}
+.portrait-frame{position:relative;aspect-ratio:3/4;border-radius:4px;
+  overflow:hidden;background:var(--ink-700);
+  border:1px solid var(--line);
+  box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 0 1px rgba(201,168,106,.1)}
+.portrait-frame svg{width:100%;height:100%;display:block}
+.portrait-info{margin-top:22px}
+.portrait-name{font-size:30px;font-weight:700;color:var(--gold-soft);
+  letter-spacing:.06em}
+.portrait-name .en{display:block;font-family:var(--sans);font-size:12px;
+  color:var(--muted);letter-spacing:.2em;margin-top:4px;font-weight:400}
+.portrait-meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:var(--sans);font-size:11px;padding:4px 12px;border-radius:20px;
+  border:1px solid var(--line);color:var(--muted);letter-spacing:.08em}
+.tag.accent{border-color:var(--vermilion);color:var(--vermilion)}
+
+/* 肖像切换圆点 */
+.dots{margin-top:26px;display:flex;gap:14px}
+.dots button{width:10px;height:10px;border-radius:50%;border:none;
+  background:var(--ink-500);cursor:none;transition:all .3s;padding:0}
+.dots button.active{background:var(--gold);transform:scale(1.4)}
+.dots button:hover{background:var(--gold-soft)}
+
+/* 右：书本 */
+.book-col{perspective:2000px}
+.book{position:relative;width:100%;aspect-ratio:1.5/1;transform-style:preserve-3d;
+  transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.book-inner{position:absolute;inset:0;display:flex}
+
+/* 书脊 */
+.spine{width:26px;background:linear-gradient(90deg,var(--ink-700),var(--ink-900));
+  border-radius:4px 0 0 4px;box-shadow:inset -6px 0 12px rgba(0,0,0,.6);
+  position:relative;z-index:3}
+.spine::after{content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(180deg,transparent,transparent 22px,
+  rgba(201,168,106,.08) 22px,rgba(201,168,106,.08) 23px)}
+
+/* 书页 */
+.pages{flex:1;position:relative;background:var(--paper);
+  border-radius:0 6px 6px 0;overflow:hidden;
+  box-shadow:inset 8px 0 18px rgba(0,0,0,.18),0 30px 60px rgba(0,0,0,.5);
+  color:#3a3326}
+.page{position:absolute;inset:0;padding:40px 48px 40px 36px;
+  opacity:0;transform:rotateY(-12deg) translateX(-30px);transform-origin:left center;
+  transition:opacity .6s ease,transform .7s cubic-bezier(.2,.8,.2,1);
+  pointer-events:none;display:flex;flex-direction:column}
+.page.active{opacity:1;transform:rotateY(0) translateX(0);pointer-events:auto}
+.page::before{content:"";position:absolute;left:0;top:0;bottom:0;width:36px;
+  background:linear-gradient(90deg,rgba(0,0,0,.12),transparent)}
+.page-head{display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:1px solid rgba(58,51,38,.2);padding-bottom:14px;margin-bottom:20px}
+.page-num{font-family:var(--sans);font-size:11px;color:#8b7d5e;letter-spacing:.3em}
+.page-title{font-size:24px;font-weight:700;color:#2a2418;letter-spacing:.06em}
+.page-body{flex:1;font-family:var(--serif);font-size:15.5px;line-height:2;
+  color:#4a4131;text-align:justify;overflow:hidden}
+.page-body p{margin-bottom:14px;text-indent:2em}
+.page-body .lead{font-size:17px;color:#2a2418;font-weight:600;text-indent:0;
+  border-left:3px solid var(--vermilion);padding-left:14px;margin-bottom:18px}
+.page-quote{margin-top:auto;font-family:var(--serif);font-size:14px;
+  color:#6b5e44;font-style:italic;text-align:center;padding-top:16px;
+  border-top:1px solid rgba(58,51,38,.15)}
+
+/* 翻页控件 */
+.page-nav{display:flex;justify-content:center;align-items:center;gap:30px;
+  margin-top:28px}
+.page-nav button{font-family:var(--sans);font-size:13px;color:var(--muted);
+  background:transparent;border:1px solid var(--line);padding:10px 22px;
+  border-radius:30px;cursor:none;transition:all .3s;letter-spacing:.1em}
+.page-nav button:hover{border-color:var(--gold);color:var(--gold-soft)}
+.page-nav button:disabled{opacity:.3;cursor:not-allowed}
+.page-indicator{font-family:var(--sans);font-size:12px;color:var(--muted);
+  letter-spacing:.2em;min-width:60px;text-align:center}
+.page-indicator b{color:var(--gold-soft);font-size:15px}
+
+/* ════════════════════════════════════════════════════════════
+   优势与价值
+   ════════════════════════════════════════════════════════════ */
+.values-section{position:relative;z-index:2;padding:120px 48px}
+.values-grid{max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.value-card{position:relative;padding:44px 34px;border-radius:18px;
+  background:linear-gradient(160deg,rgba(42,46,53,.7),rgba(21,23,26,.7));
+  border:1px solid var(--line);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:transform .5s cubic-bezier(.2,.8,.2,1),border-color .5s,box-shadow .5s;
+  overflow:hidden}
+.value-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  transform:scaleX(0);transition:transform .6s}
+.value-card:hover{transform:translateY(-8px);border-color:var(--gold);
+  box-shadow:0 30px 60px rgba(0,0,0,.5)}
+.value-card:hover::before{transform:scaleX(1)}
+.vc-num{font-family:var(--sans);font-size:13px;color:var(--ink-500);
+  letter-spacing:.3em;margin-bottom:24px}
+.vc-icon{width:48px;height:48px;margin-bottom:22px;opacity:.85}
+.vc-title{font-size:22px;font-weight:700;color:var(--gold-soft);
+  letter-spacing:.05em;margin-bottom:14px}
+.vc-desc{font-family:var(--sans);font-size:14px;line-height:1.9;
+  color:var(--muted);letter-spacing:.02em}
+
+/* 滚动揭示 */
+.reveal{opacity:0;transform:translateY(40px);
+  transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* ════════════════════════════════════════════════════════════
+   引言带
+   ════════════════════════════════════════════════════════════ */
+.quote-band{position:relative;z-index:2;padding:90px 48px;text-align:center}
+.quote-band::before,.quote-band::after{content:"";position:absolute;
+  left:50%;transform:translateX(-50%);width:1px;height:40px;
+  background:linear-gradient(var(--gold),transparent)}
+.quote-band::before{top:0;background:linear-gradient(transparent,var(--gold))}
+.quote-band::after{bottom:0}
+.quote-band blockquote{font-size:clamp(22px,3vw,34px);font-weight:300;
+  color:var(--paper);line-height:1.7;letter-spacing:.08em;max-width:760px;margin:0 auto}
+.quote-band .cite{margin-top:24px;font-family:var(--sans);font-size:13px;
+  color:var(--gold);letter-spacing:.3em}
+
+/* ════════════════════════════════════════════════════════════
+   二维码引流区
+   ════════════════════════════════════════════════════════════ */
+.qr-section{position:relative;z-index:2;padding:120px 48px 90px;
+  text-align:center;background:linear-gradient(180deg,transparent,rgba(21,23,26,.6))}
+.qr-section .kicker{font-family:var(--sans);font-size:12px;color:var(--gold);
+  letter-spacing:.4em;text-transform:uppercase;margin-bottom:16px}
+.qr-section h2{font-size:clamp(30px,4.5vw,48px);font-weight:700;
+  color:var(--paper);letter-spacing:.06em;margin-bottom:12px}
+.qr-section .sub{font-family:var(--sans);font-size:14px;color:var(--muted);
+  letter-spacing:.1em;margin-bottom:48px}
+.qr-grid{max-width:980px;margin:0 auto;display:flex;justify-content:center;
+  gap:40px;flex-wrap:wrap}
+.qr-card{width:240px;padding:32px 24px;border-radius:20px;
+  background:rgba(236,228,210,.04);border:1px solid var(--line);
+  transition:transform .5s,border-color .5s;position:relative}
+.qr-card:hover{transform:translateY(-6px);border-color:var(--gold)}
+.qr-card .platform{font-family:var(--sans);font-size:13px;color:var(--gold-soft);
+  letter-spacing:.2em;margin-bottom:18px;font-weight:600}
+.qr-box{width:176px;height:176px;margin:0 auto;border-radius:12px;
+  background:var(--paper);display:flex;align-items:center;justify-content:center;
+  position:relative;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+/* 占位二维码图案（替换为真实图片即可） */
+.qr-placeholder{width:100%;height:100%;border-radius:12px;position:relative;
+  background:
+    linear-gradient(45deg,var(--ink-900) 25%,transparent 25%) 0 0/14px 14px,
+    linear-gradient(-45deg,var(--ink-900) 25%,transparent 25%) 0 0/14px 14px,
+    linear-gradient(45deg,transparent 75%,var(--ink-900) 75%) 0 0/14px 14px,
+    linear-gradient(-45deg,transparent 75%,var(--ink-900) 75%) 0 0/14px 14px,
+    var(--paper);
+  display:flex;align-items:center;justify-content:center}
+.qr-placeholder .lbl{font-family:var(--sans);font-size:11px;color:#4a4131;
+  background:var(--paper);padding:6px 10px;border-radius:6px;letter-spacing:.1em}
+.qr-card .hint{margin-top:18px;font-family:var(--sans);font-size:12px;
+  color:var(--muted);letter-spacing:.08em;line-height:1.7}
+.qr-card .replace-tip{position:absolute;top:8px;right:10px;font-family:var(--sans);
+  font-size:9px;color:var(--ink-500);letter-spacing:.1em}
+
+footer{position:relative;z-index:2;padding:40px 48px;text-align:center;
+  border-top:1px solid var(--line)}
+footer p{font-family:var(--sans);font-size:12px;color:var(--ink-500);
+  letter-spacing:.15em}
+
+/* 响应式 */
+@media(max-width:880px){
+  body{cursor:auto}
+  .cursor{display:none}
+  nav{padding:14px 20px}
+  .nav-links{gap:18px}
+  .carousel{grid-template-columns:1fr;gap:32px}
+  .carousel-wrap{gap:6px}
+  .fig-arrow{width:38px;height:38px}
+  .fig-arrow svg{width:16px;height:16px}
+  .portrait-col{position:static}
+  .portrait-frame{max-width:300px;margin:0 auto}
+  .values-grid{grid-template-columns:1fr}
+  .carousel-section,.values-section,.qr-section{padding-left:20px;padding-right:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- 自定义光标 -->
+<div class="cursor ring" id="cursorRing"></div>
+<div class="cursor" id="cursorDot"></div>
+
+<!-- ═══ 背景层 ═══ -->
+<div class="bg-layer">
+  <div class="bg-calligraphy"></div>
+  <div class="bg-chars" id="bgChars"></div>
+  <div class="bg-glow" id="bgGlow"></div>
+</div>
+
+<!-- ═══ 导航 ═══ -->
+<nav>
+  <div class="logo">传记撰写<span>印</span></div>
+  <div class="nav-links">
+    <a href="#carousel">伟人列传</a>
+    <a href="#values">价值意义</a>
+    <a href="#quote">名家之言</a>
+    <a href="#qr">联系我们</a>
+  </div>
+</nav>
+
+<!-- ═══ 英雄区 ═══ -->
+<section class="hero">
+  <div class="seal">傳</div>
+  <h1>让生命&nbsp;被书写</h1>
+  <div class="sub">以笔墨铭刻一生 · 以传记延续精神</div>
+  <div class="en">Biography Writing · Where Lives Become Legacy</div>
+  <div class="scroll-hint">向下翻阅</div>
+</section>
+
+<!-- ═══ 伟人轮播书页 ═══ -->
+<section class="carousel-section" id="carousel">
+  <div class="section-head reveal">
+    <div class="kicker">Great Lives · 五洲列传</div>
+    <h2>翻开伟人的一生</h2>
+    <p>左观其貌，右阅其书 · 每位伟人传记可翻阅五页</p>
+  </div>
+
+  <div class="carousel-wrap">
+    <!-- 左：切换上一位伟人 -->
+    <button class="fig-arrow fig-prev" id="prevFig" aria-label="上一位伟人">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+
+    <div class="carousel">
+      <!-- 左：伟人肖像 -->
+      <div class="portrait-col">
+        <div class="portrait-frame" id="portraitFrame"></div>
+        <div class="portrait-info">
+          <div class="portrait-name" id="pName"></div>
+          <div class="portrait-meta" id="pMeta"></div>
+        </div>
+        <div class="dots" id="dots"></div>
+        <div class="autoplay-bar">
+          <button id="playToggle" class="play-btn" aria-label="自动轮播开关">
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <div class="progress-track"><div class="progress-fill" id="autoProgress"></div></div>
+        </div>
+      </div>
+
+      <!-- 右：书本 -->
+      <div class="book-col">
+        <div class="book"><div class="book-inner">
+          <div class="spine"></div>
+          <div class="pages" id="pages"></div>
+        </div></div>
+        <div class="page-nav">
+          <button id="prevPage">‹ 上一页</button>
+          <div class="page-indicator"><b id="curPage">1</b> / 5</div>
+          <button id="nextPage">下一页 ›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右：切换下一位伟人 -->
+    <button class="fig-arrow fig-next" id="nextFig" aria-label="下一位伟人">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ═══ 引言带 ═══ -->
+<section class="quote-band reveal" id="quote">
+  <blockquote>“立传者，非独记其事，乃传其神、明其志、续其魂于后世也。”</blockquote>
+  <div class="cite">— 传记之义</div>
+</section>
+
+<!-- ═══ 优势与价值 ═══ -->
+<section class="values-section" id="values">
+  <div class="section-head reveal">
+    <div class="kicker">Why Biography · 何以为传</div>
+    <h2>传记撰写的优势与价值</h2>
+  </div>
+  <div class="values-grid" id="valuesGrid"></div>
+</section>
+
+<!-- ═══ 二维码引流区 ═══ -->
+<section class="qr-section" id="qr">
+  <div class="kicker">Contact Us · 扫码联系</div>
+  <h2>开始书写您的故事</h2>
+  <div class="sub">微信 · 小程序 · 闲鱼 · 任选其一扫码咨询</div>
+  <div class="qr-grid">
+    <div class="qr-card">
+      <div class="replace-tip">替换图片</div>
+      <div class="platform">微 信</div>
+      <div class="qr-box"><div class="qr-placeholder"><span class="lbl">微信二维码</span></div></div>
+      <div class="hint">扫码添加微信<br>一对一沟通传记撰写</div>
+    </div>
+    <div class="qr-card">
+      <div class="replace-tip">替换图片</div>
+      <div class="platform">小程序</div>
+      <div class="qr-box"><div class="qr-placeholder"><span class="lbl">小程序码</span></div></div>
+      <div class="hint">扫码进入小程序<br>在线预约与下单</div>
+    </div>
+    <div class="qr-card">
+      <div class="replace-tip">替换图片</div>
+      <div class="platform">闲 鱼</div>
+      <div class="qr-box"><div class="qr-placeholder"><span class="lbl">闲鱼二维码</span></div></div>
+      <div class="hint">扫码直达闲鱼店铺<br>查看案例与评价</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>传记撰写 · 让每一个生命都值得被铭记 · © 2026</p>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   数据：五位伟人 + 每人 5 页传记内容
+   ════════════════════════════════════════════════════════════ */
+const FIGURES = [
+  {
+    name:"孔 子", en:"Confucius · 约前551—前479",
+    country:"中国", era:"春秋", field:"思想家·教育家",
+    portrait: portraitConfucius(),
+    pages:[
+      {title:"尼山降圣", lead:"叔梁纥与颜氏祷于尼丘，而生孔子。",
+       body:"<p>孔子名丘，字仲尼，鲁国陬邑人。先祖为宋国贵族，至其父叔梁纥时家道渐微。母颜徵在祷于尼丘山而孕，故得名丘。</p><p>孔子三岁丧父，家境清贫，自幼以俎豆为戏，习礼乐之事。少时\"十有五而志于学\"，虽处贱事，然好学不倦，尝为委吏、乘田，皆尽其职。</p>",
+       quote:"吾十有五而志于学"},
+      {title:"周游列国", lead:"道之将行也，命也。",
+       body:"<p>孔子年五十始仕鲁，由中都宰升至大司寇，摄行相事，鲁国大治。然齐人馈女乐，鲁君怠政，孔子遂去鲁。</p><p>自此周游列国十四年，历卫、曹、宋、郑、陈、蔡、楚诸国，干七十余君而莫能用。困于陈蔡之间，绝粮七日，弦歌不辍。</p>",
+       quote:"君子固穷，小人穷斯滥矣"},
+      {title:"删述六经", lead:"述而不作，信而好古。",
+       body:"<p>晚年归鲁，孔子已六十八岁。知道之不行，乃潜心整理典籍。删《诗》《书》，定《礼》《乐》，赞《周易》，作《春秋》。</p><p>《春秋》一字褒贬，寓含微言大义，使\"乱臣贼子惧\"。六经之传，垂范后世两千余年，中华文脉赖以不坠。</p>",
+       quote:"知我者其惟春秋乎"},
+      {title:"有教无类", lead:"自行束脩以上，吾未尝无诲焉。",
+       body:"<p>孔子首开私学之风，弟子三千，贤者七十二。不分贵贱、不问国别，有教无类。以文行忠信四教，因材施教。</p><p>颜渊好学，子路勇烈，子贡善辩，曾参笃实。孔子随其性而导之，各成其材。其教育思想，至今仍为东方教育之圭臬。</p>",
+       quote:"学而不厌，诲人不倦"},
+      {title:"万世师表", lead:"天不生仲尼，万古如长夜。",
+       body:"<p>孔子卒于鲁哀公十六年，年七十三。弟子庐墓三年，子贡独守六年而去。其后学衍为八派，遍布天下。</p><p>汉武帝罢黜百家、独尊儒术，孔子遂被尊为\"大成至圣先师\"。其思想跨越两千五百年，影响及于东亚乃至世界，成为人类文明史上最伟大的思想家之一。</p>",
+       quote:"仰之弥高，钻之弥坚"}
+    ]
+  },
+  {
+    name:"苏格拉底", en:"Socrates · 前470—前399",
+    country:"古希腊", era:"古典时代", field:"哲学家",
+    portrait: portraitSocrates(),
+    pages:[
+      {title:"石雕匠之子", lead:"我唯一知道的，就是我一无所知。",
+       body:"<p>苏格拉底生于雅典阿洛珀刻，父索弗罗尼斯科为石匠，母法伊纳瑞忒为产婆。少时学父业，然天性思辨，遂弃技从哲。</p><p>他容貌寻常，扁鼻厚唇，却目光如炬。常赤足行于市集，与人论辩真理、美德与正义，终日不倦。</p>",
+       quote:"未经省察的人生不值得过"},
+      {title:"牛虻之喻", lead:"雅典是匹迟钝的骏马，而我是一只牛虻。",
+       body:"<p>苏格拉底自视为神赐雅典的\"牛虻\"，专门叮咬、唤醒沉睡的城邦。他不著书立说，唯以对话诘问世人，揭露其无知。</p><p>其\"产婆术\"通过层层追问，引导对话者自行发现真理。这种辩证法，成为西方哲学思辨的源头。</p>",
+       quote:"美德即知识"},
+      {title:"受审辩护", lead:"只要我一息尚存，就绝不停止哲思。",
+       body:"<p>前399年，苏格拉底被控\"不敬城邦之神\"与\"腐蚀青年\"。在五百人法庭上，他作《申辩篇》，坦然陈词，毫不妥协。</p><p>他以280票对221票被判有罪。本可认罪求轻判，他却提议由国家供养以褒奖其功，终被判饮鸩而死。</p>",
+       quote:"我去死，你们去活，谁的去路好，唯有神知"},
+      {title:"饮鸩就义", lead:"克利托，我们欠阿斯克勒庇俄斯一只公鸡。",
+       body:"<p>狱中，弟子们筹谋营救，苏格拉底却拒绝逃亡，谓守法即正义。临刑之日，狱卒送来毒芹汁，他从容饮尽。</p><p>毒发自足而上，他将死之际，仍嘱托弟子克利托向医药之神献祭一只公鸡——视死如归，以生命践行哲学。</p>",
+       quote:"世界上最快乐的事，莫过于为理想而奋斗"},
+      {title:"哲学之父", lead:"他是西方哲学的分水岭。",
+       body:"<p>苏格拉底一无著述，二无学派，却以对话与殉道，将哲学从自然转向人事，从\"是什么\"转向\"应当怎样\"。</p><p>柏拉图承其学，亚里士多德继其后，三贤并立，奠定西方哲学两千五百年基石。怀特海言：\"全部西方哲学史不过是柏拉图的注脚\"，而柏拉图，不过是苏格拉底的回声。</p>",
+       quote:"认识你自己"}
+    ]
+  },
+  {
+    name:"达·芬奇", en:"Leonardo da Vinci · 1452—1519",
+    country:"意大利", era:"文艺复兴", field:"博学者·艺术家",
+    portrait: portraitDavinci(),
+    pages:[
+      {title:"芬奇镇少年", lead:"智慧是经验的女儿。",
+       body:"<p>列奥纳多·达·芬奇生于佛罗伦萨附近的芬奇镇，父为公证人，母为农女。他是私生子，却得天独厚，少时即显露绘画天赋。</p><p>少年时随父迁居佛罗伦萨，拜画家韦罗基奥为师。相传他画的天使令师父搁笔，自叹不如。自此，一颗文艺复兴最璀璨的星辰冉冉升起。</p>",
+       quote:"简单是终极的复杂"},
+      {title:"万能之才", lead:"画家与哲学家，皆应通晓万物。",
+       body:"<p>达·芬奇不仅是画家，更是解剖学家、工程师、建筑师、植物学家、天文学家。他留下逾七千页手稿，涵盖飞行器、潜水艇、坦克、人体解剖之草图。</p><p>他观察鸟翼而思飞行，剖尸骸而究骨骼，画山川而察地质。科学与艺术在他笔下浑然一体，前无古人，后鲜来者。</p>",
+       quote:"学习永不磨灭心智"},
+      {title:"蒙娜丽莎", lead:"微笑里藏着宇宙的奥秘。",
+       body:"<p>《蒙娜丽莎》历时十六载仍未完工。达·芬奇以\"晕涂法\"使轮廓消融于光影，那抹神秘微笑，跨越五百年仍令观者痴迷。</p><p>《最后的晚餐》构图精妙，十二门徒神态各异，犹大的惊惧、彼得的愤怒、约翰的忧伤，皆跃然壁上。他不仅是画家，更是用色彩书写人性的哲人。</p>",
+       quote:"艺术立于永恒，自然朝夕更迭"},
+      {title:"科学笔记", lead:"我以观察为师，以经验为友。",
+       body:"<p>达·芬奇以\"镜像字\"记录手稿，从左向右书写，需照镜方能阅读。他解剖三十余具尸体，绘制人体骨骼、肌肉、脏器之详图，精确程度领先时代百年。</p><p>他设想直升机、降落伞、机关枪，虽未制造，却预示了后世工程。他研究水流、光影、植物生长，处处皆为后来科学之先声。</p>",
+       quote:"凡是可被测量者，我皆测量"},
+      {title:"文艺复兴之巅", lead:"他是那个时代最接近神的人。",
+       body:"<p>1519年，达·芬奇逝于法国昂布瓦斯，据传死于法王弗朗索瓦一世怀中。他留下未竟之作与满室手稿，成为人类历史上最完美的\"全才\"典范。</p><p>五百年后，他的手稿仍被破解、惊叹。他证明了一人之智可通天地万物，文艺复兴因他而臻于极致。后世称他为\"万能天才\"，实至名归。</p>",
+       quote:"铁锈不用则销，水不流则腐，智不用于世则衰"}
+    ]
+  },
+  {
+    name:"牛 顿", en:"Isaac Newton · 1643—1727",
+    country:"英国", era:"科学革命", field:"物理学家·数学家",
+    portrait: portraitNewton(),
+    pages:[
+      {title:"伍尔索普遗腹", lead:"我不知世人如何看我，我自视如一海滩上的男孩。",
+       body:"<p>艾萨克·牛顿生于林肯郡伍尔索普庄园，遗腹子，早产瘦弱，\"可装进一夸脱杯中\"。母改嫁后他由外祖母抚养，少时孤僻，钟情机械。</p><p>少年牛顿自制风车、水钟、日晷，展露天资。后入剑桥三一学院，师从巴罗，渐入数学与自然哲学之堂奥。</p>",
+       quote:"如果说我看得更远，那是因为我站在巨人的肩膀上"},
+      {title:"奇迹之年", lead:"那一年，瘟疫封锁了世界，却打开了宇宙。",
+       body:"<p>1665年伦敦大瘟疫，牛顿避疫归乡。在伍尔索普的十八个月里，他发明微积分、发现白光分解、构思万有引力——后世称为\"奇迹之年\"。</p><p>苹果坠地的传说虽未必属实，却道出真谛：他从此将天上星辰与地上万物统一于同一法则。这一洞见，重塑了人类对宇宙的认知。</p>",
+       quote:"真理永远在简单的事物中发现"},
+      {title:"自然哲学原理", lead:"我不杜撰假说。",
+       body:"<p>1687年，《自然哲学的数学原理》出版，哈雷倾囊资助。书中以三大运动定律与万有引力，构建了经典力学大厦，被誉为\"科学史上最伟大的著作\"。</p><p>从此，行星轨道、潮汐涨落、彗星回归，皆可由数学精确推算。宇宙不再神秘莫测，而成为一架可被计算的精密时钟。</p>",
+       quote:"我能计算的只是粒子的运动，算不出人心的疯狂"},
+      {title:"造币与炼金", lead:"真理的大海仍在我面前，未被探索。",
+       body:"<p>晚年牛顿出任皇家造币局局长，铁腕打击假币，将英镑引入金本位。他任皇家学会会长二十余年，以严苛治学闻名。</p><p>然其手稿揭示，他半生沉迷炼金术与神学，研读圣经密码、计算世界末日。科学巨人与神秘学者，奇妙地共存于一人之身。</p>",
+       quote:"我似乎只是一个在海边玩耍的男孩"},
+      {title:"不朽星辰", lead:"牛顿，你首次照亮了宇宙的法则。",
+       body:"<p>1727年牛顿逝于伦敦，葬于威斯敏斯特大教堂，是首位获此殊荣的科学家。伏尔泰见其葬礼惊叹：\"英国敬学者如敬国王。\"</p><p>他的力学统治科学界两百年，直至爱因斯坦相对论方有修正。然相对论非推翻牛顿，而是包容之。牛顿是现代科学的奠基者，其名与日月同辉。</p>",
+       quote:"我之所以能成功，皆因坚持不懈"}
+    ]
+  },
+  {
+    name:"爱因斯坦", en:"Albert Einstein · 1879—1955",
+    country:"德国/美国", era:"现代", field:"理论物理学家",
+    portrait: portraitEinstein(),
+    pages:[
+      {title:"慕尼黑迟语儿", lead:"想象力比知识更重要。",
+       body:"<p>阿尔伯特·爱因斯坦生于德国乌尔姆，犹太人。幼时说话甚迟，家人忧其智。五岁时父亲赠其指南针，那永恒指北的指针，在他心中种下好奇之种。</p><p>他厌恶德国教育的刻板，十六岁辍学，赴意大利。后入瑞士苏黎世联邦理工，毕业却谋职艰难，终入伯尔尼专利局为小职员。</p>",
+       quote:"不要试图成为一个成功者，要成为一个有价值的人"},
+      {title:"奇迹之年", lead:"1905，专利局职员改写了物理学。",
+       body:"<p>1905年，26岁的爱因斯坦在《物理年鉴》连发四篇论文：光电效应、布朗运动、狭义相对论、质能等价。这一年被称为他的\"奇迹之年\"。</p><p>E=mc²揭示质量与能量本为一体，时间与空间不再绝对。一个无名小职员，仅凭思想实验与纸笔，撼动了牛顿的千年基石。</p>",
+       quote:"E=mc²"},
+      {title:"广义相对论", lead:"引力不是力，而是时空的弯曲。",
+       body:"<p>1915年，爱因斯坦发表广义相对论，指出物质使时空弯曲，引力即时空几何。1919年日全食观测证实星光偏折，全球震动，他一夜成名。</p><p>他预言了黑洞、引力波、宇宙膨胀，皆为后世一一证实。这是人类对宇宙最深邃的理解——空间会弯曲，时间会变慢，光线会拐弯。</p>",
+       quote:"宇宙最不可理解之处，在于它竟然可被理解"},
+      {title:"和平与良知", lead:"科学没有国界，因为知识属于人类。",
+       body:"<p>1933年纳粹上台，身为犹太人的爱因斯坦流亡美国，入普林斯顿高等研究院。1939年他致信罗斯福总统，促美国研制原子弹；战后却痛悔不已，毕生呼吁和平。</p><p>他是犹太复国主义者，也是反战主义者；是科学巨人，也是道德良知。他拒绝以色列总统之位，谓\"方程对我更重要\"。</p>",
+       quote:"原子能的释放改变了一切，唯独没改变我们的思维方式"},
+      {title:"世纪之人", lead:"他使宇宙变得可以理解，又保持神秘。",
+       body:"<p>1955年爱因斯坦逝于普林斯顿，遗言火化、骨灰撒于秘地。他的大脑被保留研究，发现顶叶异于常人。他的名字成为\"天才\"的同义词。</p><p>相对论与量子力学奠基了二十世纪物理，他晚年却孤守反对量子力学的立场——\"上帝不掷骰子\"。然而正是这种执着，使他成为科学精神最纯粹的化身。</p>",
+       quote:"上帝是微妙的，但他并不怀有恶意"}
+    ]
+  }
+];
+
+/* ═══ 伟人 SVG 肖像（水墨线描风格） ═══ */
+function portraitConfucius(){
+  return `<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="bg1" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2a2e35"/><stop offset="1" stop-color="#15171a"/></linearGradient></defs>
+  <rect width="300" height="400" fill="url(#bg1)"/>
+  <!-- 长髯老者，布衣儒冠 -->
+  <g fill="none" stroke="#c9a86a" stroke-width="1.5" stroke-linecap="round" opacity="0.92">
+    <!-- 冠 -->
+    <path d="M110,70 Q150,55 190,70 L188,92 Q150,82 112,92 Z" fill="#3a3f47"/>
+    <line x1="150" y1="58" x2="150" y2="90"/>
+    <!-- 脸轮廓 -->
+    <path d="M118,110 Q120,150 130,180 Q150,195 170,180 Q180,150 182,110 Q180,95 150,92 Q120,95 118,110 Z"/>
+    <!-- 眉 -->
+    <path d="M126,118 Q138,112 148,118" stroke-width="2.2"/>
+    <path d="M152,118 Q162,112 174,118" stroke-width="2.2"/>
+    <!-- 眼 -->
+    <path d="M128,130 Q136,127 144,130"/><path d="M156,130 Q164,127 172,130"/>
+    <!-- 鼻 -->
+    <path d="M150,132 L148,160 Q150,164 152,160"/>
+    <!-- 口 -->
+    <path d="M140,168 Q150,172 160,168"/>
+    <!-- 长须 -->
+    <path d="M135,180 Q140,240 150,290 Q160,240 165,180" fill="#3a3f47" opacity="0.6"/>
+    <path d="M150,190 L150,300" stroke="#c9a86a" opacity="0.5"/>
+    <!-- 衣领 -->
+    <path d="M100,200 Q150,210 200,200 L220,400 L80,400 Z" fill="#1d2025" stroke="#c9a86a"/>
+    <path d="M150,205 L150,400"/>
+    <!-- 胸前十字交领纹 -->
+    <path d="M120,215 Q150,250 180,215" opacity="0.5"/>
+  </g>
+  <!-- 印章 -->
+  <rect x="240" y="330" width="34" height="34" rx="3" fill="#b04a3a" opacity="0.85"/>
+  <text x="257" y="353" font-size="18" fill="#ece4d2" text-anchor="middle" font-family="serif" font-weight="700">聖</text>
+  <text x="150" y="380" font-size="13" fill="#8b8472" text-anchor="middle" font-family="serif" letter-spacing="4">至聖先師</text>
+  </svg>`;
+}
+function portraitSocrates(){
+  return `<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2a2e35"/><stop offset="1" stop-color="#15171a"/></linearGradient></defs>
+  <rect width="300" height="400" fill="url(#bg2)"/>
+  <g fill="none" stroke="#c9a86a" stroke-width="1.5" stroke-linecap="round" opacity="0.92">
+    <!-- 卷发 -->
+    <path d="M100,110 Q90,80 105,70 Q120,60 135,68 Q150,60 165,68 Q180,60 195,70 Q210,80 200,110"/>
+    <path d="M100,110 Q98,125 105,135 M200,110 Q202,125 195,135"/>
+    <!-- 多圈卷发 -->
+    <circle cx="110" cy="88" r="6"/><circle cx="130" cy="78" r="6"/>
+    <circle cx="150" cy="74" r="6"/><circle cx="170" cy="78" r="6"/><circle cx="190" cy="88" r="6"/>
+    <circle cx="105" cy="105" r="5"/><circle cx="195" cy="105" r="5"/>
+    <!-- 脸 -->
+    <path d="M115,115 Q115,160 130,185 Q150,198 170,185 Q185,160 185,115 Q183,100 150,96 Q117,100 115,115 Z"/>
+    <!-- 浓眉 -->
+    <path d="M122,128 Q135,122 146,128" stroke-width="3"/>
+    <path d="M154,128 Q165,122 178,128" stroke-width="3"/>
+    <!-- 凸眼 -->
+    <ellipse cx="134" cy="138" rx="5" ry="4"/><ellipse cx="166" cy="138" rx="5" ry="4"/>
+    <circle cx="134" cy="138" r="1.5" fill="#c9a86a"/><circle cx="166" cy="138" r="1.5" fill="#c9a86a"/>
+    <!-- 扁鼻 -->
+    <path d="M148,142 Q143,158 148,165 Q150,167 152,165 Q157,158 152,142"/>
+    <!-- 厚唇胡须 -->
+    <path d="M138,172 Q150,176 162,172"/>
+    <!-- 络腮胡 -->
+    <path d="M120,180 Q125,210 135,225 Q150,235 165,225 Q175,210 180,180" fill="#3a3f47" opacity="0.5"/>
+    <path d="M135,190 L132,240 M150,192 L150,250 M165,190 L168,240" opacity="0.4"/>
+    <!-- 托加袍 -->
+    <path d="M90,205 Q150,215 210,205 L235,400 L65,400 Z" fill="#1d2025" stroke="#c9a86a"/>
+    <path d="M95,210 Q140,260 200,210" opacity="0.5"/>
+    <path d="M120,230 Q150,270 175,230" opacity="0.4"/>
+  </g>
+  <rect x="240" y="330" width="34" height="34" rx="3" fill="#b04a3a" opacity="0.85"/>
+  <text x="257" y="353" font-size="16" fill="#ece4d2" text-anchor="middle" font-family="serif" font-weight="700">哲</text>
+  <text x="150" y="380" font-size="13" fill="#8b8472" text-anchor="middle" font-family="serif" letter-spacing="4">哲學之父</text>
+  </svg>`;
+}
+function portraitDavinci(){
+  return `<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2a2e35"/><stop offset="1" stop-color="#15171a"/></linearGradient></defs>
+  <rect width="300" height="400" fill="url(#bg3)"/>
+  <g fill="none" stroke="#c9a86a" stroke-width="1.5" stroke-linecap="round" opacity="0.92">
+    <!-- 长卷发 -->
+    <path d="M95,115 Q80,150 88,200 M205,115 Q220,150 212,200"/>
+    <path d="M95,115 Q90,90 110,75 Q150,60 190,75 Q210,90 205,115"/>
+    <path d="M100,110 Q95,140 100,175 M200,110 Q205,140 200,175"/>
+    <!-- 波浪发 -->
+    <path d="M110,80 Q115,72 120,80 Q125,72 130,80 Q135,72 140,80" opacity="0.7"/>
+    <path d="M160,80 Q165,72 170,80 Q175,72 180,80 Q185,72 190,80" opacity="0.7"/>
+    <!-- 脸 -->
+    <path d="M118,112 Q118,155 132,180 Q150,192 168,180 Q182,155 182,112 Q180,98 150,94 Q120,98 118,112 Z"/>
+    <!-- 眉 -->
+    <path d="M126,124 Q135,120 144,124" stroke-width="2"/>
+    <path d="M156,124 Q165,120 174,124" stroke-width="2"/>
+    <!-- 深邃眼 -->
+    <ellipse cx="135" cy="135" rx="5" ry="3.5"/><ellipse cx="165" cy="135" rx="5" ry="3.5"/>
+    <circle cx="135" cy="135" r="1.5" fill="#c9a86a"/><circle cx="165" cy="135" r="1.5" fill="#c9a86a"/>
+    <!-- 鼻 -->
+    <path d="M150,138 Q146,155 148,162 Q150,164 152,162 Q154,155 150,138"/>
+    <!-- 须 -->
+    <path d="M138,168 Q150,172 162,168"/>
+    <path d="M140,175 Q150,200 150,230 Q150,200 160,175" fill="#3a3f47" opacity="0.5"/>
+    <!-- 衣 -->
+    <path d="M95,200 Q150,212 205,200 L230,400 L70,400 Z" fill="#1d2025" stroke="#c9a86a"/>
+    <path d="M150,205 L150,400" opacity="0.4"/>
+    <!-- 维特鲁威人圆方（标志性） -->
+    <g transform="translate(150,340)" opacity="0.35" stroke="#7fa088">
+      <circle r="22"/><rect x="-22" y="-22" width="44" height="44" fill="none"/>
+      <circle r="2" fill="#7fa088"/>
+    </g>
+  </g>
+  <rect x="240" y="330" width="34" height="34" rx="3" fill="#b04a3a" opacity="0.85"/>
+  <text x="257" y="353" font-size="16" fill="#ece4d2" text-anchor="middle" font-family="serif" font-weight="700">才</text>
+  <text x="150" y="380" font-size="13" fill="#8b8472" text-anchor="middle" font-family="serif" letter-spacing="4">萬能天才</text>
+  </svg>`;
+}
+function portraitNewton(){
+  return `<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="bg4" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2a2e35"/><stop offset="1" stop-color="#15171a"/></linearGradient></defs>
+  <rect width="300" height="400" fill="url(#bg4)"/>
+  <g fill="none" stroke="#c9a86a" stroke-width="1.5" stroke-linecap="round" opacity="0.92">
+    <!-- 卷长假发（17世纪贵族式） -->
+    <path d="M92,110 Q80,80 95,65 Q110,50 150,48 Q190,50 205,65 Q220,80 208,110"/>
+    <path d="M92,110 Q82,160 90,210 M208,110 Q218,160 210,210"/>
+    <path d="M90,210 Q80,250 100,255 M210,210 Q220,250 200,255"/>
+    <!-- 发卷 -->
+    <circle cx="100" cy="95" r="7"/><circle cx="118" cy="70" r="7"/>
+    <circle cx="140" cy="58" r="7"/><circle cx="160" cy="58" r="7"/>
+    <circle cx="182" cy="70" r="7"/><circle cx="200" cy="95" r="7"/>
+    <circle cx="92" cy="150" r="6"/><circle cx="208" cy="150" r="6"/>
+    <circle cx="90" cy="195" r="6"/><circle cx="210" cy="195" r="6"/>
+    <!-- 脸 -->
+    <path d="M120,115 Q120,150 132,172 Q150,184 168,172 Q180,150 180,115 Q178,102 150,98 Q122,102 120,115 Z"/>
+    <!-- 眉 -->
+    <path d="M127,128 Q136,124 145,128"/><path d="M155,128 Q164,124 173,128"/>
+    <!-- 眼 -->
+    <ellipse cx="136" cy="138" rx="4.5" ry="3"/><ellipse cx="164" cy="138" rx="4.5" ry="3"/>
+    <circle cx="136" cy="138" r="1.4" fill="#c9a86a"/><circle cx="164" cy="138" r="1.4" fill="#c9a86a"/>
+    <!-- 鼻 -->
+    <path d="M150,140 L147,158 Q150,161 153,158"/>
+    <!-- 唇 -->
+    <path d="M140,165 Q150,168 160,165"/>
+    <!-- 领巾 -->
+    <path d="M110,195 Q150,205 190,195 L200,210 Q150,222 100,210 Z" fill="#3a3f47"/>
+    <!-- 燕尾袍 -->
+    <path d="M95,210 Q150,220 205,210 L235,400 L65,400 Z" fill="#1d2025" stroke="#c9a86a"/>
+    <path d="M150,215 L150,400" opacity="0.4"/>
+    <!-- 苹果（标志性） -->
+    <g transform="translate(245,360)" opacity="0.5">
+      <circle r="11" fill="#b04a3a" opacity="0.7"/>
+      <path d="M0,-11 L2,-16" stroke="#7fa088"/>
+    </g>
+  </g>
+  <rect x="40" y="330" width="34" height="34" rx="3" fill="#b04a3a" opacity="0.85"/>
+  <text x="57" y="353" font-size="16" fill="#ece4d2" text-anchor="middle" font-family="serif" font-weight="700">理</text>
+  <text x="150" y="380" font-size="13" fill="#8b8472" text-anchor="middle" font-family="serif" letter-spacing="4">科學巨擘</text>
+  </svg>`;
+}
+function portraitEinstein(){
+  return `<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="bg5" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2a2e35"/><stop offset="1" stop-color="#15171a"/></linearGradient></defs>
+  <rect width="300" height="400" fill="url(#bg5)"/>
+  <g fill="none" stroke="#c9a86a" stroke-width="1.5" stroke-linecap="round" opacity="0.92">
+    <!-- 蓬乱白发 -->
+    <path d="M95,115 Q75,85 90,60 Q115,40 150,42 Q185,40 210,60 Q225,85 205,115"/>
+    <path d="M95,115 Q85,90 88,70 M205,115 Q215,90 212,70"/>
+    <!-- 乱发线条 -->
+    <path d="M100,70 Q108,55 100,48 M120,55 Q125,45 118,40 M150,42 L152,30 M180,55 Q175,45 182,40 M200,70 Q192,55 200,48"/>
+    <path d="M95,110 Q88,130 92,150 M205,110 Q212,130 208,150"/>
+    <path d="M92,80 Q85,70 80,78 M208,80 Q215,70 220,78" opacity="0.6"/>
+    <!-- 脸 -->
+    <path d="M120,112 Q120,148 132,170 Q150,182 168,170 Q180,148 180,112 Q178,98 150,94 Q122,98 120,112 Z"/>
+    <!-- 浓眉 -->
+    <path d="M125,124 Q136,118 146,124" stroke-width="2.5"/>
+    <path d="M154,124 Q164,118 175,124" stroke-width="2.5"/>
+    <!-- 眼（略下垂，智慧） -->
+    <path d="M128,134 Q136,138 144,134"/><path d="M156,134 Q164,138 172,134"/>
+    <circle cx="136" cy="136" r="1.4" fill="#c9a86a"/><circle cx="164" cy="136" r="1.4" fill="#c9a86a"/>
+    <!-- 鼻 -->
+    <path d="M150,138 L146,158 Q150,162 154,158"/>
+    <!-- 小胡子（标志性） -->
+    <path d="M138,165 Q150,170 162,165" stroke-width="2.5"/>
+    <!-- 嘴 -->
+    <path d="M142,172 Q150,174 158,172"/>
+    <!-- 西装领 -->
+    <path d="M110,195 Q150,202 190,195 L205,400 L95,400 Z" fill="#1d2025" stroke="#c9a86a"/>
+    <path d="M150,200 L140,260 L150,275 L160,260 Z" fill="#2a2e35"/>
+    <!-- E=mc² -->
+    <text x="150" y="355" font-size="18" fill="#c9a86a" text-anchor="middle" font-family="serif" opacity="0.6" font-style="italic">E=mc²</text>
+  </g>
+  <rect x="240" y="330" width="34" height="34" rx="3" fill="#b04a3a" opacity="0.85"/>
+  <text x="257" y="353" font-size="16" fill="#ece4d2" text-anchor="middle" font-family="serif" font-weight="700">智</text>
+  <text x="150" y="380" font-size="13" fill="#8b8472" text-anchor="middle" font-family="serif" letter-spacing="4">世紀天才</text>
+  </svg>`;
+}
+
+/* ═══ 优势与价值数据 ═══ */
+const VALUES = [
+  {num:"01", title:"铭刻一生", icon:iconSeal(),
+   desc:"传记将一个人的生平经历、思想情感、功过得失完整记录，使短暂的生命化作永恒的文字，让后人得以追寻其足迹，体悟其人生。"},
+  {num:"02", title:"传承精神", icon:iconBook(),
+   desc:"财富可散，权势可失，唯精神与智慧能跨越时空。传记承载家风、志向与价值观，使先辈的智慧代代相传，成为家族最珍贵的遗产。"},
+  {num:"03", title:"启迪后人", icon:iconLight(),
+   desc:"每一位传记都是一面镜子。伟人的抉择、凡人的坚守，皆为后人之鉴。读传可知兴替、明得失、立志向，让前人的经验照亮来者的路。"},
+  {num:"04", title:"留存记忆", icon:iconTime(),
+   desc:"记忆会褪色，亲历者会离去。趁记忆尚鲜活，以笔墨及时留存，避免珍贵经历湮没于时光。传记是对抗遗忘最有力的方式。"},
+  {num:"05", title:"彰显价值", icon:iconStar(),
+   desc:"每一个认真活过的人生都有其价值。传记不独为伟人而作，平凡人生中的坚韧、善良与智慧，同样值得被书写、被看见、被铭记。"},
+  {num:"06", title:"文化积累", icon:iconScroll(),
+   desc:"个人传记汇聚成时代群像，无数个体的故事编织成民族的记忆。传记写作是文化传承的基石，让历史不只属于王侯，也属于每一个真实的人。"}
+];
+function iconSeal(){return `<svg class="vc-icon" viewBox="0 0 48 48" fill="none" stroke="#c9a86a" stroke-width="2"><rect x="10" y="10" width="28" height="28" rx="3"/><path d="M18 18h12v12H18z" fill="#b04a3a" stroke="none" opacity=".6"/></svg>`}
+function iconBook(){return `<svg class="vc-icon" viewBox="0 0 48 48" fill="none" stroke="#c9a86a" stroke-width="2"><path d="M8 10v30h32V10H8z"/><path d="M24 10v30M14 18h6M14 24h6M28 18h6M28 24h6"/></svg>`}
+function iconLight(){return `<svg class="vc-icon" viewBox="0 0 48 48" fill="none" stroke="#c9a86a" stroke-width="2"><circle cx="24" cy="20" r="10"/><path d="M24 30v8M18 42h12M20 36h8"/></svg>`}
+function iconTime(){return `<svg class="vc-icon" viewBox="0 0 48 48" fill="none" stroke="#c9a86a" stroke-width="2"><circle cx="24" cy="24" r="16"/><path d="M24 14v10l7 4"/></svg>`}
+function iconStar(){return `<svg class="vc-icon" viewBox="0 0 48 48" fill="none" stroke="#c9a86a" stroke-width="2"><path d="M24 8l5 13 14 1-11 9 4 14-12-8-12 8 4-14-11-9 14-1z"/></svg>`}
+function iconScroll(){return `<svg class="vc-icon" viewBox="0 0 48 48" fill="none" stroke="#c9a86a" stroke-width="2"><path d="M12 8h22v28a6 6 0 006 6H18a6 6 0 01-6-6V8z"/><path d="M18 16h12M18 22h12M18 28h8"/></svg>`}
+
+/* ════════════════════════════════════════════════════════════
+   渲染逻辑
+   ════════════════════════════════════════════════════════════ */
+let curFig=0, curPage=0;
+
+function renderDots(){
+  const d=document.getElementById('dots');
+  d.innerHTML='';
+  FIGURES.forEach((f,i)=>{
+    const b=document.createElement('button');
+    if(i===curFig)b.className='active';
+    b.onclick=()=>{curFig=i;curPage=0;render();resetAuto();};
+    d.appendChild(b);
+  });
+}
+function render(){
+  const f=FIGURES[curFig];
+  document.getElementById('portraitFrame').innerHTML=f.portrait;
+  document.getElementById('pName').innerHTML=f.name+`<span class="en">${f.en}</span>`;
+  const meta=document.getElementById('pMeta');
+  meta.innerHTML=`<span class="tag accent">${f.country}</span>`+
+    `<span class="tag">${f.era}</span><span class="tag">${f.field}</span>`;
+  // 书页
+  const pages=document.getElementById('pages');
+  pages.innerHTML='';
+  f.pages.forEach((p,i)=>{
+    const div=document.createElement('div');
+    div.className='page'+(i===curPage?' active':'');
+    div.innerHTML=
+      `<div class="page-head"><div class="page-title">${p.title}</div><div class="page-num">— ${i+1} —</div></div>`+
+      `<div class="page-body"><p class="lead">${p.lead}</p>${p.body}</div>`+
+      `<div class="page-quote">「 ${p.quote} 」</div>`;
+    pages.appendChild(div);
+  });
+  document.getElementById('curPage').textContent=curPage+1;
+  document.getElementById('prevPage').disabled=(curPage===0);
+  document.getElementById('nextPage').disabled=(curPage===4);
+  renderDots();
+}
+function renderValues(){
+  const g=document.getElementById('valuesGrid');
+  VALUES.forEach(v=>{
+    const c=document.createElement('div');
+    c.className='value-card reveal';
+    c.innerHTML=`<div class="vc-num">${v.num}</div>${v.icon}`+
+      `<div class="vc-title">${v.title}</div><div class="vc-desc">${v.desc}</div>`;
+    g.appendChild(c);
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   交互：翻页
+   ════════════════════════════════════════════════════════════ */
+document.getElementById('prevPage').onclick=()=>{if(curPage>0){curPage--;render();resetAuto();}};
+document.getElementById('nextPage').onclick=()=>{if(curPage<4){curPage++;render();resetAuto();}};
+// 键盘左右翻页
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft'&&curPage>0){curPage--;render();resetAuto();}
+  if(e.key==='ArrowRight'&&curPage<4){curPage++;render();resetAuto();}
+});
+
+/* ════════════════════════════════════════════════════════════
+   交互：切换伟人（左右箭头）+ 自动轮播
+   ════════════════════════════════════════════════════════════ */
+const AUTO_INTERVAL=6000;   // 每位伟人停留 6 秒
+let autoPlaying=true;
+let autoTimer=null;
+let progressRAF=null;
+let cycleStart=0;
+
+function goFig(n){
+  curFig=(n+FIGURES.length)%FIGURES.length;  // 循环
+  curPage=0;
+  render();
+  resetAuto();
+}
+document.getElementById('prevFig').onclick=()=>goFig(curFig-1);
+document.getElementById('nextFig').onclick=()=>goFig(curFig+1);
+
+// 自动轮播：进度条动画 + 到时切下一位
+function startAuto(){
+  if(!autoPlaying)return;
+  stopAuto();
+  cycleStart=performance.now();
+  const bar=document.getElementById('autoProgress');
+  bar.style.width='0%';
+  bar.style.transition='none';
+  // 强制重排后启动过渡
+  void bar.offsetWidth;
+  bar.style.transition=`width ${AUTO_INTERVAL}ms linear`;
+  bar.style.width='100%';
+  autoTimer=setTimeout(()=>goFig(curFig+1),AUTO_INTERVAL);
+}
+function stopAuto(){
+  if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
+  const bar=document.getElementById('autoProgress');
+  if(bar)bar.style.transition='none';
+}
+function resetAuto(){
+  if(autoPlaying)startAuto();
+}
+function togglePlay(){
+  autoPlaying=!autoPlaying;
+  const btn=document.getElementById('playToggle');
+  const wrap=btn.closest('.autoplay-bar');
+  if(autoPlaying){
+    btn.querySelector('.icon-pause').style.display='';
+    btn.querySelector('.icon-play').style.display='none';
+    wrap.classList.remove('paused');
+    startAuto();
+  }else{
+    btn.querySelector('.icon-pause').style.display='none';
+    btn.querySelector('.icon-play').style.display='';
+    wrap.classList.add('paused');
+    stopAuto();
+  }
+}
+document.getElementById('playToggle').onclick=togglePlay;
+
+// 鼠标悬停轮播区暂停自动播放，离开恢复
+const carouselEl=document.querySelector('.carousel-wrap');
+carouselEl.addEventListener('mouseenter',()=>{if(autoPlaying)stopAuto();});
+carouselEl.addEventListener('mouseleave',()=>{if(autoPlaying)startAuto();});
+// 触摸设备点击也重置
+carouselEl.addEventListener('touchstart',()=>{if(autoPlaying)stopAuto();},{passive:true});
+carouselEl.addEventListener('touchend',()=>{if(autoPlaying)startAuto();},{passive:true});
+
+/* ════════════════════════════════════════════════════════════
+   交互：鼠标光标 + 背景毛笔字渐变放大
+   ════════════════════════════════════════════════════════════ */
+const dot=document.getElementById('cursorDot');
+const ring=document.getElementById('cursorRing');
+const glow=document.getElementById('bgGlow');
+let mx=window.innerWidth/2, my=window.innerHeight/2;
+
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  dot.style.left=mx+'px'; dot.style.top=my+'px';
+  ring.style.left=mx+'px'; ring.style.top=my+'px';
+  glow.style.left=mx+'px'; glow.style.top=my+'px';
+  glow.style.opacity='1';
+});
+document.addEventListener('mouseleave',()=>{glow.style.opacity='0';});
+
+// 鼠标经过处背景毛笔字渐变放大（节流）
+const bgChars=document.getElementById('bgChars');
+function buildBgChars(){
+  const chars="傳記撰寫立傳者非獨記其事乃傳其神明其志續其魂於後世也讓生命被書寫以筆墨銘刻一生以傳記延續精神立言立德立功三不朽青史留名文以載道";
+  let html='';
+  // 重复铺满
+  for(let i=0;i<400;i++){
+    html+='<span>'+chars[i%chars.length]+'</span>';
+  }
+  bgChars.innerHTML=html;
+}
+let bgTimer=null;
+function updateBgNear(){
+  const spans=bgChars.querySelectorAll('span');
+  const range=180;
+  spans.forEach(s=>{
+    const r=s.getBoundingClientRect();
+    const cx=r.left+r.width/2, cy=r.top+r.height/2;
+    const dx=cx-mx, dy=cy-my;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<range){
+      s.classList.add('near');
+    }else{
+      s.classList.remove('near');
+    }
+  });
+}
+document.addEventListener('mousemove',()=>{
+  if(bgTimer)return;
+  bgTimer=setTimeout(()=>{updateBgNear();bgTimer=null;},60);
+});
+
+/* ════════════════════════════════════════════════════════════
+   交互：滚动揭示
+   ════════════════════════════════════════════════════════════ */
+function setupReveal(){
+  const obs=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});
+  },{threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+
+/* ════════════════════════════════════════════════════════════
+   初始化
+   ════════════════════════════════════════════════════════════ */
+buildBgChars();
+renderValues();
+render();
+setupReveal();
+startAuto();   // 启动自动轮播
+</script>
+</body>
+</html>
