@@ -317,21 +317,91 @@ footer{position:relative;z-index:2;padding:40px 48px;text-align:center;
 footer p{font-family:var(--sans);font-size:12px;color:var(--ink-500);
   letter-spacing:.15em}
 
-/* 响应式 */
+/* 响应式 —— 平板 */
 @media(max-width:880px){
   body{cursor:auto}
   .cursor{display:none}
-  nav{padding:14px 20px}
-  .nav-links{gap:18px}
+  nav{padding:14px 20px;flex-wrap:wrap;gap:8px}
+  .nav-links{gap:14px;font-size:11px;flex-wrap:wrap;justify-content:flex-end}
+  .logo{font-size:18px}
+  .carousel-section,.values-section,.qr-section{padding-left:20px;padding-right:20px}
   .carousel{grid-template-columns:1fr;gap:32px}
   .carousel-wrap{gap:6px}
-  .fig-arrow{width:38px;height:38px}
+  .fig-arrow{width:38px;height:38px;flex:none}
   .fig-arrow svg{width:16px;height:16px}
   .portrait-col{position:static}
   .portrait-frame{max-width:300px;margin:0 auto}
   .values-grid{grid-template-columns:1fr}
-  .carousel-section,.values-section,.qr-section{padding-left:20px;padding-right:20px}
+  /* 书本缩小 */
+  .book{aspect-ratio:1.3/1}
+  .page{padding:24px 22px 22px 22px}
+  .page-title{font-size:20px}
+  .page-body{font-size:14px;line-height:1.85}
+  .page-body .lead{font-size:15px}
+  .page-body p{margin-bottom:10px}
+  .spine{width:20px}
+  /* 二维码区双列 */
+  .qr-grid{gap:20px}
 }
+
+/* 响应式 —— 手机 */
+@media(max-width:560px){
+  nav{padding:10px 14px}
+  .nav-links{gap:10px;font-size:10px}
+  .nav-links a{display:none}
+  .nav-links a:first-child,.nav-links a:last-child{display:inline}
+  .hero{min-height:90vh}
+  .hero h1{font-size:42px}
+  .hero .sub{font-size:13px;letter-spacing:.18em}
+  .hero .seal{width:52px;height:52px;font-size:22px;margin-bottom:24px}
+  .section-head{margin-bottom:32px}
+  .section-head h2{font-size:28px}
+  .section-head p{font-size:12px}
+  /* 轮播：箭头更小，书本单栏适配 */
+  .carousel-section{padding:50px 14px 70px}
+  .carousel-wrap{gap:4px}
+  .fig-arrow{width:32px;height:32px;min-width:32px}
+  .fig-arrow svg{width:13px;height:13px}
+  .carousel{gap:22px}
+  .portrait-frame{max-width:200px}
+  .portrait-name{font-size:24px}
+  .portrait-meta{gap:6px}
+  .tag{font-size:10px;padding:3px 9px}
+  /* 书本：手机上改竖向比例，放大字号 */
+  .book{aspect-ratio:0.82/1}
+  .book-inner{flex-direction:row}
+  .spine{width:14px}
+  .page{padding:18px 16px 14px 16px}
+  .page-head{padding-bottom:10px;margin-bottom:12px}
+  .page-title{font-size:17px;letter-spacing:.03em}
+  .page-num{font-size:10px}
+  .page-body{font-size:13px;line-height:1.75;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch}
+  .page-body p{text-indent:1.8em;margin-bottom:8px}
+  .page-body .lead{font-size:13.5px;padding-left:10px;margin-bottom:12px}
+  .page-quote{font-size:12px;padding-top:10px}
+  /* 翻页按钮 */
+  .page-nav{gap:14px;margin-top:18px}
+  .page-nav button{padding:8px 14px;font-size:12px}
+  /* 自动轮播进度条 */
+  .autoplay-bar{margin-top:16px;gap:10px}
+  .play-btn{width:30px;height:30px}
+  /* 价值卡 */
+  .values-section{padding:70px 14px}
+  .value-card{padding:30px 22px}
+  .vc-title{font-size:19px}
+  .vc-desc{font-size:13px}
+  /* 引言带 */
+  .quote-band{padding:60px 20px}
+  .quote-band blockquote{font-size:20px}
+  /* 二维码：单列居中 */
+  .qr-section{padding:80px 16px 60px}
+  .qr-card{width:100%;max-width:260px;padding:26px 20px}
+  .qr-box{width:150px;height:150px}
+  /* footer */
+  footer{padding:28px 16px}
+  footer p{font-size:11px}
+}
+
 </style>
 </head>
 <body>
